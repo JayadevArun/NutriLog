@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NutriLog | Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    /* Full-page background image */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* Overlay to darken background for readability */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 0;
+    }
+
+    /* Make container content appear above overlay */
+    .container, .navbar, footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Cards slightly transparent */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Footer background semi-transparent */
+    footer {
+      background: rgba(0,0,0,0.8);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">🍽 NutriLog</a>
+      <div>
+        <a class="btn btn-light btn-sm me-2" href="{{ url_for('main.index') }}">Home</a>
+        <a class="btn btn-warning btn-sm" href="{{ url_for('main.add') }}">Add Food</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container py-5">
+
+    <div class="card shadow-lg mb-4">
+      <div class="card-body">
+        <form action="{{ url_for('main.create_log') }}" method="POST">
+          <label class="form-label"><i class="bi bi-calendar-plus"></i> Add New Date</label>
+          <div class="input-group">
+            <input type="date" class="form-control" name="date" required>
+            <button class="btn btn-success"><i class="bi bi-plus-circle"></i> Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <h4 class="mb-4 text-center text-white">📅 Existing Records ({{ log_dates|length }})</h4>
+    <div class="row g-4">
+      {% for log_date in log_dates %}
+      <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+          <div class="card-header bg-warning text-dark fw-bold">
+            <i class="bi bi-calendar-event"></i> {{ log_date['log_date'].date.strftime('%B %d, %Y') }}
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Protein <span class="badge bg-primary">{{ log_date['proteins'] }}</span></li>
+            <li class="list-group-item">Carbs <span class="badge bg-info">{{ log_date['carbs'] }}</span></li>
+            <li class="list-group-item">Fat <span class="badge bg-danger">{{ log_date['fats'] }}</span></li>
+            <li class="list-group-item">Calories <span class="badge bg-dark">{{ log_date['calories'] }}</span></li>
+          </ul>
+          <div class="card-footer text-end">
+            <a href="{{ url_for('main.view', log_id=log_date['log_date'].id) }}" class="btn btn-sm btn-outline-primary">View</a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <footer class="text-white text-center py-3 mt-5">
+    &copy; 2025 NutriLog
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
